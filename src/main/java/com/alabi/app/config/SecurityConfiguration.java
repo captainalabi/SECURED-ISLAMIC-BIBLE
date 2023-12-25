@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -40,18 +39,24 @@ public class SecurityConfiguration{
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		
-		String staticResources = "/images/**";
-		
+		String staticResources = "/images/**";		
 		http
 		.csrf(csrf -> csrf.disable())
 			.authorizeHttpRequests((requests) -> requests
 				.requestMatchers("/login", "/addnewuser", "/saveUser", "/", "/home", "/index", staticResources
 						).permitAll()
-				
+				.requestMatchers("/show-create-islamicBibleForm", "/getCreateIslamicBibleForm",
+						"/createIslamicBible").
+				hasAuthority("ADMIN")
+								.anyRequest().authenticated()
 				.requestMatchers("/list-user", "/list", "/showUpdateForm",
 						"/deleteUser", "/showRoleForm", "/createRole", "/listRoles",
-						"/editRole", "/deleteRole", "/show-create-islamicBibleForm").
-				hasAuthority("MASTER")//
+						"/editRole", "/deleteRole", "/show-create-islamicBibleForm",
+						"/bibleBook/show/form", "/bibleBook/create", "/bibleBook/list",
+						"/bibleBook/update", "/bibleBook/delete", "/bibleVersion/show/form",
+						"/bibleVersion/create", "/bibleVersion/list", "/bibleVersion/update",
+						"/bibleVersion/delete").
+				hasAuthority("MASTER")
 								.anyRequest().authenticated()
 			)
 			.formLogin((form) -> form
@@ -68,7 +73,6 @@ public class SecurityConfiguration{
 					.permitAll()
 					);
 		return http.build();
-	}
-		
+	}		
 }
 

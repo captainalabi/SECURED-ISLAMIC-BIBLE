@@ -1,6 +1,5 @@
 package com.alabi.app.evidence.controller;
 
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.alabi.app.evidence.entity.BibleBookDTO;
 import com.alabi.app.evidence.entity.IslamicBible;
 import com.alabi.app.evidence.entity.IslamicBibleDTO;
 import com.alabi.app.evidence.service.BibleBookService;
@@ -58,15 +56,7 @@ public class IslamicBibleController {
 //		model.addAttribute("listAllIslamicBible", islamicBibleService.findAll(keyword));
 //		return "listAllIslamicBible";
 //	}
-	
-	@GetMapping("/getCreateIslamicBibleForm")
-	public String getCreateIslamicBibleForm(Model model) {	
-		List <BibleBookDTO> booksList = bookService.read();
-		model.addAttribute("booksList", booksList);
-		model.addAttribute("islamicBible", new IslamicBible());
-		return "create-islamicBible";
-	}
-	
+		
 	@PostMapping("/createIslamicBible")
 	public String createIslamicBible(Model model, IslamicBibleDTO islamicBibleDTO,
 			RedirectAttributes redirectAttributes) {

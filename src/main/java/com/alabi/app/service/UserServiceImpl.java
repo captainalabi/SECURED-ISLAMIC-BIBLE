@@ -45,23 +45,11 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = userRepository.findByEmail(username);
-
-		UserDTO userDTO = new UserDTO(
-				user.getId(), 
-				user.getFirstName(), 
-				user.getLastName(), 
+				return new org.springframework.security.core.userdetails.User(
 				user.getEmail(),
 				user.getPassword(),
-				user.getRoles());
-
-		System.out.println("dto ::::::::::::::::::: " + userDTO.email() +" "+
-				userDTO.password());
-		
-		return new org.springframework.security.core.userdetails.User(
-				userDTO.email(),
-				userDTO.password(),
-				mapRolesToAuthorities(user.getRoles()));
-		
+				mapRolesToAuthorities(user.getRoles())
+				);
 	}
 
 	private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
@@ -100,13 +88,26 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void edit(UserDTO userDTO) {
+		User theUser = userRepository.findById(userDTO.id()).get();
 		userRepository.save(
 				new User(userDTO.id(), 
 						userDTO.firstName(),
 						userDTO.lastName(), 
 						userDTO.email(),
-						userDTO.password(),
+						theUser.getPassword(),
 						userDTO.roles()));
 	}
 
+	@Override
+	public UserDTO findByEmail(String email) {
+		User user = userRepository.findByEmail(email);
+		return new UserDTO(
+				user.getId(),
+				user.getFirstName(),
+				user.getLastName(),
+				user.getEmail(),
+				user.getPassword(),
+				user.getRoles()
+				);
+	}
 }
